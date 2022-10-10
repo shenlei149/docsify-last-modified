@@ -1,9 +1,9 @@
 var CONFIG = {
     repo: '',
     basePath: 'docs/',
-    preString: 'Last modified:',
+    preString: '> last update time: ',
     dateFormat: '{YYYY}-{MM}-{DD} {HH}:{mm}:{ss}',
-    align: 'right',
+    whereToPlace: 'top',
 };
 
 var install = function (hook, vm) {
@@ -12,7 +12,7 @@ var install = function (hook, vm) {
     CONFIG.basePath = opts.basePath && typeof opts.basePath === 'string' ? opts.basePath : CONFIG.basePath;
     CONFIG.preString = opts.preString && typeof opts.preString === 'string' ? opts.preString : CONFIG.preString;
     CONFIG.dateFormat = opts.dateFormat && typeof opts.dateFormat === 'string' ? opts.dateFormat : CONFIG.dateFormat;
-    CONFIG.align = opts.align && typeof opts.align === 'string' ? opts.align : CONFIG.align;
+    CONFIG.whereToPlace = opts.whereToPlace && typeof opts.whereToPlace === 'string' ? opts.whereToPlace : CONFIG.whereToPlace;
 
     hook.beforeEach(function(html) {
         var time = '{docsify-updated}';
@@ -28,12 +28,12 @@ var install = function (hook, vm) {
                 if (commits.length > 0) {
                     time = tinydate(CONFIG.dateFormat)(new Date(commits[0]['commit']['committer']['date']));
                 }
-              document.getElementById('last-modified').textContent = CONFIG.preString + time;
             });
-        } else {
-            document.getElementById('last-modified').textContent = CONFIG.preString + time;
         }
-        return (html + '\n----\n' + '<div align= ' + CONFIG.align + '><span id="last-modified"></span></div>');
+        
+        var text = CONFIG.preString + time;
+
+        return 'top' !== CONFIG.whereToPlace ? html + '\n\n' + text : text + '\n\n' + html;
     });
 };
 
